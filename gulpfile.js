@@ -4,14 +4,26 @@ const nunjucks = require('gulp-nunjucks');
 const rename = require("gulp-rename");
 const browserSync = require('browser-sync');
 const sass = require('gulp-sass');
+const babel = require('gulp-babel');
 
 function swallowError(error) {
     console.error(error.toString());
     this.emit('end')
 }
 
-const SCSS_SRC = 'css/*.scss';
-gulp.task('default', ['templates', 'scss'], function () {
+const src = {
+    scss: 'src/css/**/*.scss',
+    js: 'src/js/**/*.js',
+    templates: 'templates/index.html',
+};
+const out = {
+    templates: 'templates/**/*',
+    scss: 'build/css',
+    js: 'build/js',
+};
+
+
+gulp.task('default', ['templates', 'scss', 'js'], () => {
     browserSync.init({
         notify: false,
         server: {
@@ -20,20 +32,30 @@ gulp.task('default', ['templates', 'scss'], function () {
         files: '*'
     });
     gulp.watch(["templates/**/*"], ['templates']);
-    gulp.watch([SCSS_SRC], ['scss']);
+    gulp.watch(src.scss, ['scss']);
+    gulp.watch(src.js, ['js']);
 
 });
 
 gulp.task('templates', ['compile'], browserSync.reload);
-gulp.task('compile', function () {
-    return gulp.src('templates/index.html')
+gulp.task('compile', () => {
+    return gulp.src('src/index.html')
         .pipe(nunjucks.compile()).on('error', swallowError)
         .pipe(gulp.dest('build'));
 });
 
-gulp.task('scss', function () {
-    return gulp.src(SCSS_SRC)
+gulp.task('scss', () => {
+    return gulp.src(src.scss)
         .pipe(sass.sync().on('error', sass.logError))
-        .pipe(gulp.dest('./build/css'))
+        .pipe(gulp.dest(out.scss))
         .pipe(browserSync.stream());
 });
+
+gulp.task('js', () => {
+    return gulp.src(src.js)
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(gulp.dest(out.js));
+});
+
