@@ -5,6 +5,7 @@ const rename = require("gulp-rename");
 const browserSync = require('browser-sync');
 const sass = require('gulp-sass');
 const babel = require('gulp-babel');
+const gulpBowerFiles = require('gulp-bower-files');
 
 function swallowError(error) {
     console.error(error.toString());
@@ -14,34 +15,38 @@ function swallowError(error) {
 const src = {
     scss: 'src/css/**/*.scss',
     js: 'src/js/**/*.js',
-    templates: 'templates/index.html',
+    templates_all: ['src/templates/**/*', 'src/index.html'],
+    templates_start: 'src/index.html',
 };
 const out = {
-    templates: 'templates/**/*',
     scss: 'build/css',
     js: 'build/js',
+    templates: 'build',
+    lib:'build/lib',
 };
 
 
-gulp.task('default', ['templates', 'scss', 'js'], () => {
+gulp.task('default', ['compile', 'scss', 'js', 'bower-files'], () => {
     browserSync.init({
         notify: false,
         server: {
             baseDir: "./build/"
         },
-        files: '*'
     });
-    gulp.watch(["templates/**/*"], ['templates']);
+    gulp.watch(src.templates_all, ['templates']);
     gulp.watch(src.scss, ['scss']);
-    gulp.watch(src.js, ['js']);
+    gulp.watch(src.js, ['js-watch']);
 
 });
 
-gulp.task('templates', ['compile'], browserSync.reload);
+gulp.task('templates', ['compile'], function (done) {
+    browserSync.reload();
+    done();
+});
 gulp.task('compile', () => {
-    return gulp.src('src/index.html')
+    return gulp.src(src.templates_start)
         .pipe(nunjucks.compile()).on('error', swallowError)
-        .pipe(gulp.dest('build'));
+        .pipe(gulp.dest(out.templates));
 });
 
 gulp.task('scss', () => {
@@ -51,11 +56,19 @@ gulp.task('scss', () => {
         .pipe(browserSync.stream());
 });
 
+gulp.task('js-watch', ['js'], function (done) {
+    browserSync.reload();
+    done();
+});
 gulp.task('js', () => {
     return gulp.src(src.js)
         .pipe(babel({
             presets: ['es2015']
         }))
         .pipe(gulp.dest(out.js));
+});
+
+gulp.task("bower-files", function(){
+    gulpBowerFiles().pipe(gulp.dest(out.lib));
 });
 

@@ -1,6 +1,6 @@
-bower_components
 build
 node_modules
 .idea/*
 !.idea/runConfigurations
-!.idea/nature.iml
+!.idea/numberGame.iml
+src/lib

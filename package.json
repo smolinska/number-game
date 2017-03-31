@@ -11,6 +11,7 @@
   "dependencies": {
     "browser-sync": "^2.18.7",
     "gulp": "^3.9.1",
+    "gulp-bower-files": "^0.2.7",
     "gulp-nunjucks": "^3.0.0",
     "gulp-rename": "^1.2.2"
   },
