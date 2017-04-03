@@ -4,7 +4,7 @@
         <form id="game-form">
             <label for="your-number">Your number:</label>
             <input class="typed-number" type="number" min="1" max="25" step="1" name="your-number" id="your-number" placeholder="type number from 1 to 25">
-            <button class="btn btn-default">Go!</button>
+            <button class="btn btn-default" id="go">Go!</button>
             <br>
             <label>
                 <input type="radio" name="difficulty" value="easy" checked> easy
@@ -17,6 +17,17 @@
             </label>
         </form>
     </div>
+    <div id="hearts">
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+        <i class="fa fa-heart" aria-hidden="true" style="font-size:20px"></i>
+    </div>
+    <div>Your result is: <span id="your-result"></span></div>
+    <button class="btn btn-warning" id="reset">Reset!</button>
     <div class="row">
         <span id="feedback"></span>
     </div>
